@@ -28,3 +28,8 @@ Tik bij Scanner op **Camera aanzetten** en geef cameratoestemming. De APK toont 
 
 ## Wandelmissie (Android 1.6)
 Kies na de winkel-check-in **Start wandelmissie**. Loop richting het pastarek: na vier geschatte stappen verschijnt een virtuele pijl onderin het camerabeeld. Bij een beschikbare oriëntatiesensor houdt de pijl de kijkrichting van dat moment vast. Na zes verdere stappen komt het zoekvizier. Sta stil en richt op de barcode van Barilla Spaghetti Nº5 (500 g). De herkende doelcode licht op: tik op het scherm terwijl de ring gloeit om te verzamelen. De pijl kent de winkelindeling niet; volg alleen een veilig, vrij pad. Geen sensoren nodig bij **Direct scannen** of handmatige invoer. De bewegingsmeting stopt zodra de veldcamera wordt gepauzeerd.
+
+## Filiaalkaarten en locatie (1.7)
+Open **Filiaalkaarten** voor Dongen of Breda. De meegeleverde BRT-stratenkaarten (Kadaster via PDOK) beslaan circa 1,5 × 1,5 km rond elk filiaal, met zoomen, scrollen, een tijdelijk loopspoor en een nauwkeurigheidscirkel. Geen kaarttegels downloaden tijdens het spelen. De browser vraagt hoge nauwkeurigheid; Android vraagt tijdens actief gebruik maximaal eens per drie seconden een update na twee meter verplaatsing. Verouderde posities vervallen. Kies in Android *Precieze locatie* voor het beste resultaat. Bron en reproductiescript: `tools/store_maps.py`.
+
+De binnenkaart stopt GPS en gebruikt handmatig gekozen herkenningspunten. Er is geen geverifieerde indeling per filiaal meegeleverd. Voeg een eigen foto of schets toe en plaats ingang, vers, pastarek en kassa door op de plattegrond te tikken. De ingedeelde kaart blijft alleen op je toestel, apart per filiaal. De app leidt je niet automatisch naar een rek.
