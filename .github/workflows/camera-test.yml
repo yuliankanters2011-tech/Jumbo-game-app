@@ -1,0 +1,20 @@
+name: Camera smoke test
+on:
+  push:
+    paths: ['Jumbo-Speurclub.apk', 'tests/camera-smoke.py', '.github/workflows/camera-test.yml']
+permissions: {contents: read}
+jobs:
+  viewfinder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Allow emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          profile: pixel_2
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back emulated
+          script: python3 tests/camera-smoke.py
