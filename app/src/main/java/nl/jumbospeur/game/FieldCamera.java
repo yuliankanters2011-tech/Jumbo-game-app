@@ -32,6 +32,9 @@ public class FieldCamera extends ComponentActivity {
     private byte[] pixels=new byte[0];
     private TextView message;
     private boolean ended;
+    private AisleTrail trail;
+    private String goal;
+
     private int dp(int n){return Math.round(n*getResources().getDisplayMetrics().density);}
     private FrameLayout.LayoutParams at(int w,int h,int gravity){return new FrameLayout.LayoutParams(w,h,gravity);}
     private void finishWith(String key,String value){
@@ -48,7 +51,9 @@ public class FieldCamera extends ComponentActivity {
         hints.put(DecodeHintType.POSSIBLE_FORMATS,Arrays.asList(BarcodeFormat.EAN_13,BarcodeFormat.EAN_8,BarcodeFormat.UPC_A,BarcodeFormat.UPC_E,BarcodeFormat.ITF,BarcodeFormat.CODE_128));
         reader.setHints(hints);
         String store=getIntent().getStringExtra("store");
-        for(int i=0;i<2;i++){
+        goal=getIntent().getStringExtra("goal");
+        boolean walking=goal!=null&&!goal.isEmpty();
+        for(int i=0;!walking&&i<2;i++){
             LinearLayout post=new LinearLayout(this);post.setOrientation(LinearLayout.VERTICAL);post.setGravity(Gravity.CENTER_HORIZONTAL);
             TextView sign=new TextView(this);sign.setText(i==0?"⚑ WINKEL":"▥ SCAN");sign.setTextColor(0xff153627);sign.setGravity(Gravity.CENTER);sign.setBackgroundColor(0xffffce50);post.addView(sign,dp(90),dp(36));
             TextView stem=new TextView(this);stem.setBackgroundColor(0xffffce50);post.addView(stem,dp(5),dp(55));
@@ -57,6 +62,7 @@ public class FieldCamera extends ComponentActivity {
             post.setOnClickListener(v->message.setText(hint));
         }
         message=new TextView(this); message.setText("VELDCAMERA  /  Richt tussen de virtuele paaltjes");message.setGravity(Gravity.CENTER);message.setTextColor(Color.WHITE);message.setBackgroundColor(0xd919352a);message.setPadding(dp(12),dp(16),dp(12),dp(16));frame.addView(message,at(-1,-2,Gravity.TOP));
+        if(walking){trail=new AisleTrail(this,message,()->finishWith("code",goal),b==null?0:b.getInt("steps"));frame.addView(trail,1,at(-1,-1,Gravity.CENTER));}
         Button back=new Button(this);back.setText("Sluiten · handmatig verder");back.setOnClickListener(v->finish());frame.addView(back,at(-1,-2,Gravity.BOTTOM));
         if(checkSelfPermission(Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){finishWith("error","Geen cameratoestemming. Typ de barcode of geef toestemming in Android.");return;}
         preview.post(this::startCamera);
@@ -75,7 +81,7 @@ public class FieldCamera extends ComponentActivity {
                     frames.setAnalyzer(decoder,this::readFrame);
                     Camera camera=cameras.bindToLifecycle(this,lens,view,frames);
                     camera.getCameraInfo().getCameraState().observe(this,state->{if(state.getError()!=null)cameraFailed();});
-                    preview.getPreviewStreamState().observe(this,state->{if(state==PreviewView.StreamState.STREAMING)message.setText("Camera actief · Richt tussen de virtuele paaltjes");});
+                    preview.getPreviewStreamState().observe(this,state->{if(trail==null && state==PreviewView.StreamState.STREAMING)message.setText("Camera actief · Richt tussen de virtuele paaltjes");});
                 }catch(Exception e){cameraFailed();}
             },ContextCompat.getMainExecutor(this));
         }catch(RuntimeException e){cameraFailed();}
@@ -83,20 +89,31 @@ public class FieldCamera extends ComponentActivity {
     private void cameraFailed(){finishWith("error","Camera niet beschikbaar. Controleer cameratoegang, sluit andere camera-apps of typ de barcode.");}
     private void readFrame(ImageProxy image){
         try{
+            if(trail!=null&&!trail.atShelf())return;
             long now=SystemClock.elapsedRealtime();if(now-lastFrame<200)return;lastFrame=now;
             int w=image.getWidth(),h=image.getHeight(),rotation=image.getImageInfo().getRotationDegrees();
             ImageProxy.PlaneProxy y=image.getPlanes()[0];ByteBuffer buffer=y.getBuffer();int stride=y.getRowStride(),step=y.getPixelStride(),base=buffer.position();
             if(pixels.length!=w*h)pixels=new byte[w*h];
             boolean turn=rotation==90||rotation==270;
             for(int row=0;row<h;row++)for(int col=0;col<w;col++){
-                int dest=turn?col*h+(h-1-row):row*w+col;
+                int dest=rotation==90?col*h+(h-1-row):rotation==270?(w-1-col)*h+row:rotation==180?(h-1-row)*w+(w-1-col):row*w+col;
                 pixels[dest]=buffer.get(base+row*stride+col*step);
             }
             int width=turn?h:w,height=turn?w:h;
             PlanarYUVLuminanceSource src=new PlanarYUVLuminanceSource(pixels,width,height,0,0,width,height,false);
-            String code=reader.decodeWithState(new BinaryBitmap(new HybridBinarizer(src))).getText();
+            Result result=reader.decodeWithState(new BinaryBitmap(new HybridBinarizer(src)));String code=result.getText();
+            if(trail!=null){
+                if(goal.equals(code)){
+                    float sx=width*.5f,sy=height*.5f;ResultPoint[] points=result.getResultPoints();
+                    if(points!=null&&points.length>0){sx=0;sy=0;for(ResultPoint p:points){sx+=p.getX();sy+=p.getY();}sx/=points.length;sy/=points.length;}
+                    final float px=sx,py=sy;runOnUiThread(()->{int vw=preview.getWidth(),vh=preview.getHeight();if(vw<=0||vh<=0||isFinishing()||!getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED))return;float scale=Math.max(vw/(float)width,vh/(float)height);trail.target(.5f+(px-width*.5f)*scale/vw,.5f+(py-height*.5f)*scale/vh);});
+                }return;
+            }
             if(code!=null&&code.matches("[0-9]{8,14}"))runOnUiThread(()->finishWith("code",code));
         }catch(NotFoundException ignored){}catch(RuntimeException error){runOnUiThread(this::cameraFailed);}finally{reader.reset();image.close();}
     }
+    @Override protected void onResume(){super.onResume();if(trail!=null)trail.start();}
+    @Override protected void onPause(){if(trail!=null)trail.stop();super.onPause();}
+    @Override protected void onSaveInstanceState(Bundle b){super.onSaveInstanceState(b);if(trail!=null)b.putInt("steps",trail.progress());}
     @Override protected void onDestroy(){if(cameras!=null)cameras.unbindAll();decoder.shutdown();super.onDestroy();}
 }
