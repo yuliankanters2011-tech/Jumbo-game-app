@@ -15,7 +15,7 @@ jobs:
         with: {name: Jumbo-Speurclub-APK, path: app/build/outputs/apk/debug/app-debug.apk}
   # Publish this delivery on its own branch, never directly to main.
   standalone:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/arena/fb0ee2a9-jumbo-game-app' && contains(github.event.head_commit.message, '[standalone-apk]')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/arena/85b38688-jumbo-game-app' && contains(github.event.head_commit.message, '[standalone-apk]')
     runs-on: ubuntu-latest
     permissions: {contents: write}
     steps:

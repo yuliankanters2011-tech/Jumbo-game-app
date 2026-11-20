@@ -14,3 +14,8 @@ Asynchroon clubklassement, geen live kaart. Start `node server/club.js` op een e
 GPS-afstand, geschatte stappen (versnellingsmeter), bewegingsstatus en camerascanner hebben afzonderlijke schakelaars, standaard uit. Alleen de voorkeuren worden bewaard, niet je route. Afstand en stappen gelden per sessie. Sensoren pauzeren op de achtergrond. Een browser zonder geschikte sensor kan geen metingen geven. De camera start alleen na een extra druk bij Scanner.
 
 Publiceer via **Settings → Pages → Deploy from a branch → arena/d10381c5-jumbo-game-app → /docs → Save**. Dezelfde bestanden gaan mee in de APK. Na een eerste online bezoek kan de site offline laden als de browser de serviceworker-cache bewaart.
+
+## Winkeltocht (1.2)
+Kies een Oosterhouts filiaal op de speurradar. Noord is boven; de radar toont richting en hemelsbrede afstand, geen wandelroute. Claim het speurpunt binnen 150 m met een recente plaatsbepaling (±60 m of beter), of kies handmatig inchecken. Scan vervolgens de verpakking van Barilla Spaghetti Nº5 500 g. Alleen de ondersteunde EAN ontgrendelt de winkelbadge. Bij nieuwe pasta in je collectie krijg je ook 50 punten. Er is geen live voorraadinformatie. Een andere verpakking kan een andere EAN hebben.
+
+Bronnen: [Nieuwe Bouwlingstraat, © OpenStreetMap-bijdragers](https://mapcarta.com/N2853302973), [winkelgebied Arkendonk (gebiedsmiddelpunt)](https://postcodebijadres.nl/arkendonk+oosterhout), [productcode, Open Food Facts](https://world.openfoodfacts.org/product/8076800195057/spaghetti-n-5-barilla).
