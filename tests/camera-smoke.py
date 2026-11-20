@@ -58,11 +58,11 @@ tap_matching('Loop rustig', tap=False)
 
 def walk(count):
     for _ in range(count):
-        adb('emu', 'sensor', 'set', 'acceleration', '0:9.8:0')
-        time.sleep(.3)
-        adb('emu', 'sensor', 'set', 'acceleration', '0:13:0')
-        time.sleep(.3)
-    adb('emu', 'sensor', 'set', 'acceleration', '0:9.8:0')
+        adb('emu', 'sensor', 'set', 'acceleration', '0:0:0')
+        time.sleep(1.2)
+        adb('emu', 'sensor', 'set', 'acceleration', '0:20:0')
+        time.sleep(1.2)
+    adb('emu', 'sensor', 'set', 'acceleration', '0:0:0')
 
 walk(4)
 tap_matching('Volg de vloerpijl', tap=False)
