@@ -10,9 +10,14 @@ def adb(*args):
 
 
 def tap_matching(prefix, scroll=False, tap=True):
-    for attempt in range(12):
-        adb('shell', 'uiautomator', 'dump', '/sdcard/window.xml')
-        tree = ET.fromstring(adb('shell', 'cat', '/sdcard/window.xml'))
+    tree = ET.Element('hierarchy')
+    for attempt in range(15):
+        try:
+            adb('shell', 'uiautomator', 'dump', '/sdcard/window.xml')
+            tree = ET.fromstring(adb('shell', 'cat', '/sdcard/window.xml'))
+        except (subprocess.CalledProcessError, ET.ParseError):
+            time.sleep(1)
+            continue
         for node in tree.iter('node'):
             if any(prefix.lower() in node.get(k, '').lower() for k in ('text', 'content-desc')):
                 x, y, r, b = map(int, re.findall(r'\d+', node.get('bounds')))
@@ -41,3 +46,27 @@ tap_matching('Sluiten')
 tap_matching('Barcode gebruiken')
 assert adb('shell', 'pidof', pkg).strip()
 print('Packaged APK: camera opens, post responds, scanner closes and manual entry remains available.')
+
+# Restart the dashboard, check in offline and drive the actual emulator sensor.
+adb('shell', 'am', 'force-stop', pkg)
+adb('shell', 'am', 'start', '-W', '-n', pkg+'/.Main')
+tap_matching('Kies een winkel')
+tap_matching('Jumbo Dongen')
+tap_matching('ik ben bij de winkel')
+tap_matching('Start wandelmissie')
+tap_matching('Loop rustig', tap=False)
+
+def walk(count):
+    for _ in range(count):
+        adb('emu', 'sensor', 'set', 'acceleration', '0:9.8:0')
+        time.sleep(.3)
+        adb('emu', 'sensor', 'set', 'acceleration', '0:13:0')
+        time.sleep(.3)
+    adb('emu', 'sensor', 'set', 'acceleration', '0:9.8:0')
+
+walk(4)
+tap_matching('Volg de vloerpijl', tap=False)
+walk(6)
+tap_matching('Sta stil', tap=False)
+tap_matching('Sluiten')
+print('Walk encounter: real permission path, movement, floor arrow and shelf-search phases passed.')
