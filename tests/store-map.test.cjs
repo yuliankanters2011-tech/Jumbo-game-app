@@ -1,0 +1,4 @@
+const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+const m=fs.readFileSync('docs/maps.js','utf8'),nodes={streetmap:{style:{}},streetmarks:{},mapinfo:{}};
+const ctx={document:{querySelector:q=>nodes[q.slice(1)]},$:q=>nodes[q.slice(1)],stores:[null,null,{lat:51.627785,lon:4.942128},{lat:51.594238,lon:4.747577}],prefs:{gps:true},fix:null,delta:()=>({distance:20})};vm.createContext(ctx);vm.runInContext(m,ctx);
+for(const i of [2,3]){let p=ctx.stores[i];vm.runInContext(`atlas=${i}`,ctx);let [x,y]=ctx.mapPoint(p);assert(Math.abs(x-512)<1&&Math.abs(y-512)<1);ctx.fix={...p,acc:9,time:Date.now()};ctx.drawOutdoor();assert.match(nodes.mapinfo.textContent,/±9 m/);assert.match(nodes.streetmarks.innerHTML,/fill-opacity/);ctx.fix.time-=31000;ctx.drawOutdoor();assert.doesNotMatch(nodes.streetmarks.innerHTML,/fill-opacity/);assert.match(nodes.mapinfo.textContent,/Wacht/)}
