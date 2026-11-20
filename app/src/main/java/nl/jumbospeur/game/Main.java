@@ -1,6 +1,11 @@
 package nl.jumbospeur.game;
 import android.hardware.*;import android.location.*;import android.Manifest;import android.content.pm.PackageManager;import android.app.*;import android.os.*;import android.webkit.*;import android.content.Intent;import com.google.zxing.integration.android.*;
 public class Main extends Activity implements SensorEventListener,LocationListener { WebView web; public void onCreate(Bundle b){super.onCreate(b); web=new WebView(this);setContentView(web);web.getSettings().setJavaScriptEnabled(true);web.getSettings().setDomStorageEnabled(true);web.setWebViewClient(new WebViewClient(){public boolean shouldOverrideUrlLoading(WebView w,WebResourceRequest r){return true;}});web.addJavascriptInterface(this,"Game");web.loadUrl("file:///android_asset/index.html");}
+ @JavascriptInterface public void openWifi(){runOnUiThread(()->{
+   if(Build.VERSION.SDK_INT>=29 && openSettings(android.provider.Settings.Panel.ACTION_WIFI))return;
+   if(!openSettings(android.provider.Settings.ACTION_WIFI_SETTINGS))android.widget.Toast.makeText(this,"Open Wifi via de instellingen van je toestel.",android.widget.Toast.LENGTH_LONG).show();
+ });}
+ boolean openSettings(String action){try{startActivity(new Intent(action));return true;}catch(android.content.ActivityNotFoundException|SecurityException unavailable){return false;}}
  boolean gps,motion,foreground,prompted,tracking,listening;
  LocationManager lm(){return (LocationManager)getSystemService(LOCATION_SERVICE);} SensorManager sm(){return (SensorManager)getSystemService(SENSOR_SERVICE);}
  @JavascriptInterface public void instruments(boolean g,boolean m){runOnUiThread(()->{if(!g)prompted=false;gps=g;motion=m;refresh();});}

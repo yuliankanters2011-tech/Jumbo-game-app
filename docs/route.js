@@ -1,5 +1,5 @@
 // Offline checkpoints. Bearings are map-relative (north up), not device-relative.
-const stores=[{name:'Jumbo Nieuwe Bouwlingstraat',area:'Oosterhout · Nieuwe Bouwlingstraat 2',lat:51.64230,lon:4.85302},{name:'Jumbo Arkendonk',area:'Oosterhout · winkelgebied Arkendonk',lat:51.659095,lon:4.864208}];
+const stores=[{name:'Jumbo Nieuwe Bouwlingstraat',area:'Oosterhout · Nieuwe Bouwlingstraat 2',lat:51.64230,lon:4.85302},{name:'Jumbo Arkendonk',area:'Oosterhout · winkelgebied Arkendonk',lat:51.659095,lon:4.864208},{name:'Jumbo Dongen',area:'Dongen · Mgr. Schaepmanlaan 8',lat:51.627785,lon:4.942128},{name:'Jumbo Foodmarkt Breda',area:'Breda · Rat Verleghstraat 4 (bij Action)',lat:51.594238,lon:4.747577}];
 const mission={name:'Barilla Spaghetti Nº5',size:'500 g',ean:'8076800195057'};
 let trail=JSON.parse(localStorage.trail||'{"store":null,"stage":"choose","badges":[]}'),fix=null;
 const activeStore=()=>stores[trail.store];
@@ -15,7 +15,7 @@ function renderTrail(){const s=activeStore(),dest=document.querySelector('#desti
  else if(trail.stage==='scan'){hint.textContent=`Speurpunt gevonden! Zoek ${mission.name} (${mission.size}) en scan de verpakking.`;btn.textContent='Open scanmissie →';action=scanMission}
  else{hint.textContent=`Winkelbadge verdiend! ${trail.badges.length} van ${stores.length} filialen ontdekt.`;btn.textContent='Kies volgende winkel →'}btn.onclick=action;
  const live=document.querySelector('#range');if(live){live.textContent=hint.textContent;document.querySelector('#claim').disabled=!(d&&d.distance<=150&&fix.acc<=60)}}
-function chooseStore(){openPanel('Kies je Jumbo',`<p>Je speurtocht start bij een van deze winkelpunten in Oosterhout.</p>${stores.map((s,i)=>`<button class="row" onclick="selectStore(${i})">${s.name} ${trail.badges.includes(i)?'✪':''}<br><small>${s.area}</small></button>`).join('')}`)}
+function chooseStore(){openPanel('Kies je Jumbo',`<p>Je speurtocht start bij een van deze winkelpunten in Noord-Brabant.</p>${stores.map((s,i)=>`<button class="row" onclick="selectStore(${i})">${s.name} ${trail.badges.includes(i)?'✪':''}<br><small>${s.area}</small></button>`).join('')}`)}
 function selectStore(i){if(trail.store!==i){trail.store=i;trail.stage=trail.badges.includes(i)?'done':'travel';saveTrail()}if(trail.stage==='travel')checkpoint();else if(trail.stage==='scan')scanMission();else dlg.close()}
 function gearOn(key){const input=document.querySelector('#status-'+key).closest('label').querySelector('input');if(!input.checked)input.click()}
 function checkpoint(){if(trail.stage!=='travel')return;openPanel('Vind het speurpunt',`<p><b>${activeStore().name}</b><br>${activeStore().area}</p><p id="range" aria-live="polite"></p><p>Ontgrendel binnen 150 meter, met GPS-nauwkeurigheid van 60 meter of beter. Blijf op openbare paden.</p><button onclick="gearOn('gps');renderTrail()">Gebruik GPS</button> <button id="claim" onclick="arrive(true)">Speurpunt claimen</button><button class="row" onclick="arrive(false)">Zonder GPS: ik ben bij de winkel →</button>`);renderTrail()}
