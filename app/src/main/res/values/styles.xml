@@ -1,0 +1,1 @@
+<resources><style name="Speurclub" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowBackground">#11261f</item><item name="android:statusBarColor">#172e25</item><item name="android:navigationBarColor">#11261f</item><item name="android:colorAccent">#477963</item><item name="android:windowLightStatusBar">false</item></style></resources>
