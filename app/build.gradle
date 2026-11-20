@@ -1,4 +1,10 @@
 plugins { id 'com.android.application' version '8.7.3' }
-android { namespace 'nl.jumbospeur.game'; compileSdk 35; defaultConfig { applicationId 'nl.jumbospeur.game'; minSdk 24; targetSdk 35; versionCode 5; versionName '1.4' } }
-dependencies { implementation 'com.journeyapps:zxing-android-embedded:4.3.0' }
+android { namespace 'nl.jumbospeur.game'; compileSdk 35; defaultConfig { applicationId 'nl.jumbospeur.game'; minSdk 24; targetSdk 35; versionCode 6; versionName '1.5' } }
+dependencies { 
+    implementation 'androidx.activity:activity:1.9.3'
+    implementation 'androidx.camera:camera-camera2:1.4.2'
+    implementation 'androidx.camera:camera-lifecycle:1.4.2'
+    implementation 'androidx.camera:camera-view:1.4.2'
+    implementation 'com.google.zxing:core:3.4.1'
+ }
 android.sourceSets.main.assets.srcDirs = ['../docs']
