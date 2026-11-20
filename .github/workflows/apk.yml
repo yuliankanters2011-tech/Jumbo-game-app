@@ -15,7 +15,7 @@ jobs:
         with: {name: Jumbo-Speurclub-APK, path: app/build/outputs/apk/debug/app-debug.apk}
   # Publish this delivery on its own branch, never directly to main.
   standalone:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/arena/9b439c41-jumbo-game-app' && contains(github.event.head_commit.message, '[standalone-apk]')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/arena/aed9913a-jumbo-game-app' && contains(github.event.head_commit.message, '[standalone-apk]')
     runs-on: ubuntu-latest
     permissions: {contents: write}
     steps:
@@ -43,6 +43,16 @@ jobs:
           "$tools/apksigner" verify --verbose Jumbo-Speurclub.apk
           unzip -tq Jumbo-Speurclub.apk
           rm -f "$RUNNER_TEMP/signer.p12"
+      - name: Enable emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - name: Verify first-run camera permission and live preview on signed APK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          profile: pixel_2
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back emulated
+          script: python3 tests/camera-smoke.py
       - name: Publish verified APK at the repository root
         run: |
           git config user.name 'github-actions[bot]'

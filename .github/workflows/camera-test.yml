@@ -1,7 +1,7 @@
 name: Camera smoke test
 on:
   push:
-    paths: ['Jumbo-Speurclub.apk', 'tests/camera-smoke.py', '.github/workflows/camera-test.yml']
+    paths: ['Jumbo-Speurclub.apk']
 permissions: {contents: read}
 jobs:
   viewfinder:
