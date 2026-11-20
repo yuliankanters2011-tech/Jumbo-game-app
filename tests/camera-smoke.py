@@ -14,7 +14,7 @@ def tap_matching(prefix, scroll=False):
         adb('shell', 'uiautomator', 'dump', '/sdcard/window.xml')
         tree = ET.fromstring(adb('shell', 'cat', '/sdcard/window.xml'))
         for node in tree.iter('node'):
-            if any(node.get(k, '').lower().startswith(prefix.lower()) for k in ('text', 'content-desc')):
+            if any(prefix.lower() in node.get(k, '').lower() for k in ('text', 'content-desc')):
                 x, y, r, b = map(int, re.findall(r'\d+', node.get('bounds')))
                 if b > y and r > x:
                     adb('shell', 'input', 'tap', str((x+r)//2), str((y+b)//2))
@@ -22,6 +22,8 @@ def tap_matching(prefix, scroll=False):
         if scroll and attempt >= 1:
             adb('shell', 'input', 'swipe', '300', '800', '300', '440', '350')
         time.sleep(0.5)
+    print('::error::'+adb('logcat','-b','crash','-d')[-2000:].replace('\n',' '))
+    print('::error::Missing '+prefix+'; '+str([(n.get('text'),n.get('content-desc')) for n in tree.iter('node')])[:4000])
     raise AssertionError('Control missing: '+prefix+'; '+str([n.get('text') for n in tree.iter('node')]))
 
 
