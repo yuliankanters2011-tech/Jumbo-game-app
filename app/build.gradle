@@ -1,5 +1,5 @@
 plugins { id 'com.android.application' version '8.7.3' }
-android { namespace 'nl.jumbospeur.game'; compileSdk 35; defaultConfig { applicationId 'nl.jumbospeur.game'; minSdk 24; targetSdk 35; versionCode 6; versionName '1.5' } }
+android { namespace 'nl.jumbospeur.game'; compileSdk 35; defaultConfig { applicationId 'nl.jumbospeur.game'; minSdk 24; targetSdk 35; versionCode 7; versionName '1.6' } }
 dependencies { 
     implementation 'androidx.activity:activity:1.9.3'
     implementation 'androidx.camera:camera-camera2:1.4.2'

@@ -25,3 +25,6 @@ De winkeltocht bevat ook [Jumbo Dongen, Mgr. Schaepmanlaan 8](https://www.jumbo.
 
 ## Veldcamera (1.4)
 Tik bij Scanner op **Camera aanzetten** en geef cameratoestemming. De APK toont een lokale livepreview met twee virtuele, aanklikbare paaltjes: **Winkel** toont je gekozen filiaal en **Scan** geeft een scantip. Het zijn schermmarkeringen, geen objecten die aan een fysieke plek vastzitten. Houd een streepjescode tussen de paaltjes. Sluiten brengt je terug naar handmatige invoer; zonder toestemming of bij een camerafout kan dat ook. Er worden geen camerabeelden opgeslagen.
+
+## Wandelmissie (Android 1.6)
+Kies na de winkel-check-in **Start wandelmissie**. Loop richting het pastarek: na vier geschatte stappen verschijnt een virtuele pijl onderin het camerabeeld. Bij een beschikbare oriëntatiesensor houdt de pijl de kijkrichting van dat moment vast. Na zes verdere stappen komt het zoekvizier. Sta stil en richt op de barcode van Barilla Spaghetti Nº5 (500 g). De herkende doelcode licht op: tik op het scherm terwijl de ring gloeit om te verzamelen. De pijl kent de winkelindeling niet; volg alleen een veilig, vrij pad. Geen sensoren nodig bij **Direct scannen** of handmatige invoer. De bewegingsmeting stopt zodra de veldcamera wordt gepauzeerd.

@@ -22,15 +22,15 @@ public class Main extends Activity implements SensorEventListener,LocationListen
  public void onAccuracyChanged(Sensor s,int a){} public void onSensorChanged(SensorEvent e){if(motion&&foreground)js("acceleration("+e.values[0]+","+e.values[1]+","+e.values[2]+")");}
 
  private boolean openingCamera,pendingCamera;
- private String cameraStore="";
+ private String cameraStore="", cameraGoal="";
  private void cameraMessage(String m){js("window.cameraNotice && cameraNotice("+org.json.JSONObject.quote(m)+")");}
- @JavascriptInterface public void scan(String store){runOnUiThread(()->{
+ @JavascriptInterface public void scan(String store,String goal){runOnUiThread(()->{
    if(openingCamera||!foreground)return;
    if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)){cameraMessage("Geen camera gevonden. Typ de barcode.");return;}
-   cameraStore=store;openingCamera=true;
+   cameraStore=store;cameraGoal=goal;openingCamera=true;
    if(checkSelfPermission(Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{Manifest.permission.CAMERA},73);return;}
    launchCamera();
  });}
- private void launchCamera(){pendingCamera=false;try{startActivityForResult(new Intent(this,FieldCamera.class).putExtra("store",cameraStore),74);}catch(RuntimeException e){openingCamera=false;cameraMessage("De camera kon niet starten. Typ de barcode.");}}
+ private void launchCamera(){pendingCamera=false;try{startActivityForResult(new Intent(this,FieldCamera.class).putExtra("store",cameraStore).putExtra("goal",cameraGoal),74);}catch(RuntimeException e){openingCamera=false;cameraMessage("De camera kon niet starten. Typ de barcode.");}}
  @Override protected void onActivityResult(int r,int c,Intent i){super.onActivityResult(r,c,i);if(r!=74)return;openingCamera=false;if(c!=RESULT_OK||i==null){cameraMessage("Camera gesloten. Je kunt opnieuw scannen of de barcode typen.");return;}String code=i.getStringExtra("code");if(code!=null)js("barcode("+org.json.JSONObject.quote(code)+")");else if(i.hasExtra("error"))cameraMessage(i.getStringExtra("error"));}
 }
