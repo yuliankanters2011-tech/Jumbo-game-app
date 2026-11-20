@@ -22,3 +22,6 @@ Bronnen: [Nieuwe Bouwlingstraat, © OpenStreetMap-bijdragers](https://mapcarta.c
 
 ## Filialen en wifi (1.3)
 De winkeltocht bevat ook [Jumbo Dongen, Mgr. Schaepmanlaan 8](https://www.jumbo.com/winkel/dongen/jumbo-dongen-mgr-schaepmanlaan) en [Jumbo Foodmarkt Breda, Rat Verleghstraat 4](https://www.jumbo.com/winkel/breda/jumbo-breda-foodmarkt) bij de [Action](https://www.action.com/nl-nl/winkels/breda-rat-verleghstraat/). Via **Mijn uitrusting → Verbinding → Wifi aan of uit zetten** open je het wifi-paneel van Android (of de wifi-instellingen op oudere toestellen). Je zet wifi zelf aan of uit; dit geldt voor het hele toestel en verandert mobiele data niet. De browser toont hiervoor instructies.
+
+## Veldcamera (1.4)
+Tik bij Scanner op **Camera aanzetten** en geef cameratoestemming. De APK toont een lokale livepreview met twee virtuele, aanklikbare paaltjes: **Winkel** toont je gekozen filiaal en **Scan** geeft een scantip. Het zijn schermmarkeringen, geen objecten die aan een fysieke plek vastzitten. Houd een streepjescode tussen de paaltjes. Sluiten brengt je terug naar handmatige invoer; zonder toestemming of bij een camerafout kan dat ook. Er worden geen camerabeelden opgeslagen.
